@@ -7,6 +7,7 @@ const (
 	flagFolder = "folder"
 	flagSSLPub = "ssl.pub"
 	flagSSLKey = "ssl.key"
+	flagDomain = "domain"
 )
 
 // CmdServer will serve the website
@@ -34,6 +35,11 @@ var cmdServerFlags = []cli.Flag{
 		Name:  flagSSLKey,
 		Value: "",
 		Usage: "SSL private key for server",
+	},
+	cli.StringFlag{
+		Name:  flagDomain,
+		Value: "sites.example.com",
+		Usage: "The base domain to route with.",
 	},
 }
 
