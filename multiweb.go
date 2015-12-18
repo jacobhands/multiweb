@@ -31,6 +31,7 @@ func main() {
 				// resp.WriteHeader(200) // HTTP 200
 				resp.Write([]byte(req.Host + "\n"))
 				subDomain := strings.Replace(req.Host, "."+baseURL, "", 1)
+				subDomain = strings.Split(subDomain, ":")[0]
 				resp.Write([]byte("Subdomain: " + subDomain))
 			},
 		)
