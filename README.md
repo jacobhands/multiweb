@@ -19,7 +19,7 @@ sites // The root folder
           ssl.bundle.crt
           ssl.key
     - b.foo.com
-    - www
+      - www
   - bar.com
     - www
     - c.bar.com
