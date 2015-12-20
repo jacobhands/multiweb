@@ -42,6 +42,6 @@ func runCmdServer(ctx *cli.Context) {
 	// Set instance corresponding to host address.
 	hs.Set("*."+baseURL, m)
 
-	m.Get("/", r.GET)
+	m.Get("/*", r.GET)
 	hs.Run()
 }
