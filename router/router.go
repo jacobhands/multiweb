@@ -13,6 +13,11 @@ type Router struct {
 	Ctx *cli.Context
 }
 
+// New creates a new router containing cli context.
+func New(ctx *cli.Context) Router {
+	return Router{Ctx: ctx}
+}
+
 // GET is the router for /
 func (r Router) GET(res http.ResponseWriter, req *http.Request) {
 	baseURL := r.Ctx.String(flag.BaseURL)

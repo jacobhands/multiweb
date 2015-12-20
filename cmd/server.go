@@ -35,7 +35,7 @@ func runCmdServer(ctx *cli.Context) {
 	println("Serving files!", ctx.String(flag.Folder), ctx.IsSet(flag.Folder))
 
 	baseURL := ctx.String(flag.BaseURL)
-	r := router.Router{ctx}
+	r := router.New(ctx)
 	m := macaron.Classic()
 	hs := switcher.NewHostSwitcher()
 
