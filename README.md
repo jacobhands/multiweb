@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jacobhands/multiweb.svg)](https://travis-ci.org/jacobhands/multiweb)
+[![Build Status](https://travis-ci.org/jacobhands/multiweb.svg?branch=master)](https://travis-ci.org/jacobhands/multiweb)
 
 # multiweb
 Serve multiple websites easily using Go.
