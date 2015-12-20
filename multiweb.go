@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"gstx.co/jh/multiweb/cmd"
+	"github.com/jacobhands/multiweb/cmd"
 
 	"github.com/codegangsta/cli"
 )
