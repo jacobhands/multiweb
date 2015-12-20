@@ -1,6 +1,13 @@
 package cmd
 
-import "github.com/codegangsta/cli"
+import (
+	"net/http"
+	"strings"
+
+	"github.com/codegangsta/cli"
+	"github.com/go-macaron/switcher"
+	"gopkg.in/macaron.v1"
+)
 
 const (
 	// Flag names
@@ -15,7 +22,7 @@ var CmdServer = cli.Command{
 	Name:        "server",
 	ShortName:   "s",
 	Description: "Serves up websites",
-	Action:      runServer,
+	Action:      runCmdServer,
 	Flags:       cmdServerFlags,
 }
 
@@ -43,6 +50,24 @@ var cmdServerFlags = []cli.Flag{
 	},
 }
 
-func runServer(c *cli.Context) {
-	println("Serving files!", c.String(flagFolder), c.IsSet(flagFolder))
+func runCmdServer(ctx *cli.Context) {
+	println("Serving files!", ctx.String(flagFolder), ctx.IsSet(flagFolder))
+	baseURL := ctx.String(flagDomain)
+
+	m := macaron.Classic()
+	hs := switcher.NewHostSwitcher()
+	// Set instance corresponding to host address.
+	hs.Set("*."+baseURL, m)
+
+	m.Get("/",
+		func(resp http.ResponseWriter, req *http.Request) {
+			// resp and req are injected by Macaron
+			// resp.WriteHeader(200) // HTTP 200
+			resp.Write([]byte(req.Host + "\n"))
+			subDomain := strings.Replace(req.Host, "."+baseURL, "", 1)
+			subDomain = strings.Split(subDomain, ":")[0]
+			resp.Write([]byte("Subdomain: " + subDomain))
+		},
+	)
+	hs.Run()
 }
