@@ -66,7 +66,7 @@ func runCmdServer(ctx *cli.Context) {
 			resp.Write([]byte(req.Host + "\n"))
 			subDomain := strings.Replace(req.Host, "."+baseURL, "", 1)
 			subDomain = strings.Split(subDomain, ":")[0]
-			resp.Write([]byte("Subdomain: " + subDomain))
+			resp.Write([]byte("Subdomain: " + subDomain + "\n"))
 		},
 	)
 	hs.Run()
