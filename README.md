@@ -14,8 +14,8 @@ sites // The root folder
         ssl.bundle.crt      // SSL bundle for site
         ssl.key             // SSL key
     - a.foo.com             // a.foo.com
-      - www               // a.foo.com site files.
-      - ssl               // SSL certs for a.foo.com  
+      - www                 // a.foo.com site files.
+      - ssl                 // SSL certs for a.foo.com  
           ssl.bundle.crt
           ssl.key
     - b.foo.com
