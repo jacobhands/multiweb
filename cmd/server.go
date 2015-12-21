@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/codegangsta/cli"
@@ -31,6 +32,11 @@ var cmdServerFlags = []cli.Flag{
 		Value: "sites.example.com",
 		Usage: "The base domain to route with.",
 	},
+	cli.IntFlag{
+		Name:  flag.Port,
+		Value: 8080,
+		Usage: "The port to listen to http requests on.",
+	},
 }
 
 func runCmdServer(ctx *cli.Context) {
@@ -38,10 +44,8 @@ func runCmdServer(ctx *cli.Context) {
 
 	baseURL := ctx.String(flag.BaseURL)
 	folder := ctx.String(flag.Folder)
-
 	m := macaron.Classic()
 	hs := switcher.NewHostSwitcher()
-
 	// Set instance corresponding to host address.
 	hs.Set("*."+baseURL, m)
 	// http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc")))
@@ -53,7 +57,7 @@ func runCmdServer(ctx *cli.Context) {
 			http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
 		},
 	)
-	hs.Run()
+	hs.RunOnAddr(":" + strconv.Itoa(ctx.Int(flag.Port)))
 }
 func getSubDomain(domain, baseURL string) string {
 	subDomain := strings.Replace(domain, "."+baseURL, "", 1)
