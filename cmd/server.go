@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -42,6 +41,7 @@ var cmdServerFlags = []cli.Flag{
 
 func runCmdServer(ctx *cli.Context) {
 	println("Serving files!", ctx.String(flag.Folder), ctx.IsSet(flag.Folder))
+
 	baseURL := ctx.String(flag.BaseURL)
 	folder := ctx.String(flag.Folder)
 	m := macaron.Classic()
@@ -49,55 +49,16 @@ func runCmdServer(ctx *cli.Context) {
 	// Set instance corresponding to host address.
 	hs.Set("*."+baseURL, m)
 	// http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc")))
-	fss := fileServerSet{}
-	files, _ := ioutil.ReadDir(folder)
-	for _, f := range files {
-		if f.IsDir() {
-			domain := f.Name()
-			folderRoot := folder + "/" + f.Name()
-			println("NEW FOLDER ROOT: " + folderRoot)
-			newFss := fileServer{
-				Domain:     domain,
-				FolderRoot: folderRoot,
-				ServeHTTP: func(w http.ResponseWriter, r *http.Request) {
-					println(r.RequestURI)
-					dir := folderRoot + "/www/"
-					http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
-				},
-			}
-			fss.FileServers = append(fss.FileServers, newFss)
-		}
-	}
-	for i, v := range fss.FileServers {
-		fss.Index[v.Domain] = i
-	}
-	m.Get("/*", fss.ServeHTTP)
+	m.Get("/*",
+		func(w http.ResponseWriter, r *http.Request) {
+			subDomain := getSubDomain(r.Host, ctx.String(flag.BaseURL))
+			println(r.RequestURI)
+			dir := folder + "/" + subDomain + "/www/"
+			http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+		},
+	)
 	hs.RunOnAddr(":" + strconv.Itoa(ctx.Int(flag.Port)))
 }
-
-type fileServer struct {
-	Domain     string
-	FolderRoot string
-	ServeHTTP  func(http.ResponseWriter, *http.Request)
-}
-
-type fileServerSet struct {
-	FileServers []fileServer
-	Index       map[string]int
-}
-
-func (f fileServerSet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	domain := strings.Split(r.Host, ":")[0]
-	for _, f := range f.FileServers {
-		// println(f.Domain + " | " + r.Host)
-		if f.Domain == domain {
-			f.ServeHTTP(w, r)
-			return
-		}
-	}
-	http.NotFound(w, r)
-}
-
 func getSubDomain(domain, baseURL string) string {
 	subDomain := strings.Replace(domain, "."+baseURL, "", 1)
 	subDomain = strings.Split(subDomain, ":")[0]
