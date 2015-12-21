@@ -6,3 +6,8 @@ type Getter interface {
 	// path is the path to the resource.
 	Get(path string) ([]byte, error)
 }
+
+// Setter sets the content for the given path for future retrieval.
+type Setter interface {
+	Set(path string, content []byte) error
+}

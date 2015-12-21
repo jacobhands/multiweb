@@ -1,29 +1,29 @@
 package fileserver
 
-import "github.com/stretchr/testify/mock"
+// import "github.com/stretchr/testify/mock"
 
-// START mockCacheServ
+// // START mockCacheServ
 
-type mockCacheServ struct {
-	mock.Mock
-}
+// type mockCacheServ struct {
+// 	mock.Mock
+// }
 
-func (m *mockCacheServ) Get(path string) ([]byte, error) {
-	args := m.Called(path)
-	return args.Get(0).([]byte), args.Error(1)
-}
+// func (m *mockCacheServ) Get(path string) ([]byte, error) {
+// 	args := m.Called(path)
+// 	return args.Get(0).([]byte), args.Error(1)
+// }
 
-// END mockCacheServ
+// // END mockCacheServ
 
-// START mockFileServ
+// // START mockFileServ
 
-type mockFileServ struct {
-	mock.Mock
-}
+// type mockFileServ struct {
+// 	mock.Mock
+// }
 
-func (m *mockFileServ) Get(path string) ([]byte, error) {
-	args := m.Called(path)
-	return args.Get(0).([]byte), args.Error(1)
-}
+// func (m *mockFileServ) Get(path string) ([]byte, error) {
+// 	args := m.Called(path)
+// 	return args.Get(0).([]byte), args.Error(1)
+// }
 
-// END mockFileServ
+// // END mockFileServ
