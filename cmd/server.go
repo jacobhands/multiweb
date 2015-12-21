@@ -68,9 +68,6 @@ func runCmdServer(ctx *cli.Context) {
 			fss.FileServers = append(fss.FileServers, newFss)
 		}
 	}
-	for i, v := range fss.FileServers {
-		fss.Index[v.Domain] = i
-	}
 	m.Get("/*", fss.ServeHTTP)
 	hs.RunOnAddr(":" + strconv.Itoa(ctx.Int(flag.Port)))
 }
@@ -83,7 +80,6 @@ type fileServer struct {
 
 type fileServerSet struct {
 	FileServers []fileServer
-	Index       map[string]int
 }
 
 func (f fileServerSet) ServeHTTP(w http.ResponseWriter, r *http.Request) {
