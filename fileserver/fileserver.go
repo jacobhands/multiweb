@@ -7,13 +7,15 @@ type FileServer struct {
 	Getters     []Getter
 }
 
-// NewFileServer creates a new instance with default cacheServ & fileServ
+// NewFileServer creates a new instance with default cacheServ & fileServ Getters
 func NewFileServer(contentRoot string) (fs FileServer) {
-	fs.Getters = []Getter{
-		cacheServ{},
-		fileServ{},
+	fs = FileServer{
+		ContentRoot: contentRoot,
+		Getters: []Getter{
+			cacheServ{},
+			fileServ{},
+		},
 	}
-	fs.ContentRoot = contentRoot
 	return
 }
 
