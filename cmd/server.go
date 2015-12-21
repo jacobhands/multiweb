@@ -57,7 +57,8 @@ func runCmdServer(ctx *cli.Context) {
 			http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
 		},
 	)
-	hs.RunOnAddr(":" + strconv.Itoa(ctx.Int(flag.Port)))
+	go hs.RunOnAddr(":" + strconv.Itoa(ctx.Int(flag.Port)))
+	hs.RunOnAddr(":443")
 }
 func getSubDomain(domain, baseURL string) string {
 	subDomain := strings.Replace(domain, "."+baseURL, "", 1)
