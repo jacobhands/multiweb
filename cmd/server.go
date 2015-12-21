@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"net/http"
+	"strings"
+
 	"github.com/codegangsta/cli"
 	"github.com/go-macaron/switcher"
 	"github.com/jacobhands/multiweb/cmd/flag"
-	"github.com/jacobhands/multiweb/router"
 	"gopkg.in/macaron.v1"
 )
 
@@ -35,13 +37,26 @@ func runCmdServer(ctx *cli.Context) {
 	println("Serving files!", ctx.String(flag.Folder), ctx.IsSet(flag.Folder))
 
 	baseURL := ctx.String(flag.BaseURL)
-	r := router.New(ctx)
+	folder := ctx.String(flag.Folder)
+
 	m := macaron.Classic()
 	hs := switcher.NewHostSwitcher()
 
 	// Set instance corresponding to host address.
 	hs.Set("*."+baseURL, m)
-
-	m.Get("/*", r.GET)
+	// http.ListenAndServe(":8080", http.FileServer(http.Dir("/usr/share/doc")))
+	m.Get("/*",
+		func(w http.ResponseWriter, r *http.Request) {
+			subDomain := getSubDomain(r.Host, ctx.String(flag.BaseURL))
+			println(r.RequestURI)
+			dir := folder + "/" + subDomain + "/www/"
+			http.FileServer(http.Dir(dir)).ServeHTTP(w, r)
+		},
+	)
 	hs.Run()
+}
+func getSubDomain(domain, baseURL string) string {
+	subDomain := strings.Replace(domain, "."+baseURL, "", 1)
+	subDomain = strings.Split(subDomain, ":")[0]
+	return subDomain
 }
